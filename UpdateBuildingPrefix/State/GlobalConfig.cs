@@ -1,0 +1,277 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DistrictControlCenter.State
+
+public class GlobalConfig : GenericObservable<GlobalConfig>
+{
+    public const string FILENAME = "TMPE_GlobalConfig.xml";
+    public const string BACKUP_FILENAME = FILENAME + ".bak";
+    private static int LATEST_VERSION = 17;
+
+    public static GlobalConfig Instance
+    {
+        get => instance;
+        private set
+        {
+            if (value != null && instance != null)
+            {
+                value.Observers = instance.Observers;
+                value.ObserverLock = instance.ObserverLock;
+            }
+
+            instance = value;
+            if (instance != null)
+            {
+                instance.NotifyObservers(instance);
+            }
+        }
+    }
+
+    private static GlobalConfig instance = null;
+
+    //private object ObserverLock = new object();
+
+    /// <summary>
+    /// Holds a list of observers which are being notified as soon as the configuration is updated
+    /// </summary>
+    //private List<IObserver<GlobalConfig>> observers = new List<IObserver<GlobalConfig>>();
+
+    static GlobalConfig()
+    {
+        Reload();
+    }
+
+    internal static void OnLevelUnloading()
+    {
+    }
+
+    private static DateTime ModifiedTime = DateTime.MinValue;
+
+    /// <summary>
+    /// Configuration version
+    /// </summary>
+    public int Version = LATEST_VERSION;
+
+    /// <summary>
+    /// Language to use (if null then the game's language is being used)
+    /// </summary>
+    [CanBeNull]
+    public string LanguageCode = null;
+
+#if DEBUG
+    public DebugSettings Debug = new DebugSettings();
+#endif
+
+    public AdvancedVehicleAI AdvancedVehicleAI = new AdvancedVehicleAI();
+
+    public DynamicLaneSelection DynamicLaneSelection = new DynamicLaneSelection();
+
+    public Gameplay Gameplay = new Gameplay();
+
+    public Main Main = new Main();
+
+    public ParkingAI ParkingAI = new ParkingAI();
+
+    public PathFinding PathFinding = new PathFinding();
+
+    public PriorityRules PriorityRules = new PriorityRules();
+
+    public TimedTrafficLights TimedTrafficLights = new TimedTrafficLights();
+
+    internal static void WriteConfig()
+    {
+        ModifiedTime = WriteConfig(Instance);
+    }
+
+    private static GlobalConfig WriteDefaultConfig(GlobalConfig oldConfig, bool resetAll, out DateTime modifiedTime)
+    {
+        Log._Debug($"Writing default config...");
+        GlobalConfig conf = new GlobalConfig();
+
+        if (!resetAll && oldConfig != null)
+        {
+            conf.Main.MainMenuButtonX = oldConfig.Main.MainMenuButtonX;
+            conf.Main.MainMenuButtonY = oldConfig.Main.MainMenuButtonY;
+
+            conf.Main.MainMenuX = oldConfig.Main.MainMenuX;
+            conf.Main.MainMenuY = oldConfig.Main.MainMenuY;
+
+            conf.Main.MainMenuButtonPosLocked = oldConfig.Main.MainMenuButtonPosLocked;
+            conf.Main.MainMenuPosLocked = oldConfig.Main.MainMenuPosLocked;
+
+            conf.Main.GuiTransparency = oldConfig.Main.GuiTransparency;
+            conf.Main.OverlayTransparency = oldConfig.Main.OverlayTransparency;
+
+            conf.Main.TinyMainMenu = oldConfig.Main.TinyMainMenu;
+
+            conf.Main.EnableTutorial = oldConfig.Main.EnableTutorial;
+            conf.Main.DisplayedTutorialMessages = oldConfig.Main.DisplayedTutorialMessages;
+        }
+        modifiedTime = WriteConfig(conf);
+        return conf;
+    }
+
+    private static DateTime WriteConfig(GlobalConfig config, string filename = FILENAME)
+    {
+        try
+        {
+            Log.Info($"Writing global config to file '{filename}'...");
+            XmlSerializer serializer = new XmlSerializer(typeof(GlobalConfig));
+            using (TextWriter writer = new StreamWriter(filename))
+            {
+                serializer.Serialize(writer, config);
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Could not write global config: {e.ToString()}");
+        }
+
+        try
+        {
+            return File.GetLastWriteTime(FILENAME);
+        }
+        catch (Exception e)
+        {
+            Log.Warning($"Could not determine modification date of global config: {e.ToString()}");
+            return DateTime.Now;
+        }
+    }
+
+    public static GlobalConfig Load(out DateTime modifiedTime)
+    {
+        try
+        {
+            modifiedTime = File.GetLastWriteTime(FILENAME);
+
+            Log.Info($"Loading global config from file '{FILENAME}'...");
+            using (FileStream fs = new FileStream(FILENAME, FileMode.Open))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(GlobalConfig));
+                Log.Info($"Global config loaded.");
+                GlobalConfig conf = (GlobalConfig)serializer.Deserialize(fs);
+                if (LoadingExtension.IsGameLoaded
+#if DEBUG
+                        && !DebugSwitch.NoRoutingRecalculationOnConfigReload.Get()
+#endif
+                        )
+                {
+                    Constants.ManagerFactory.RoutingManager.RequestFullRecalculation();
+                }
+
+#if DEBUG
+                if (conf.Debug == null)
+                {
+                    conf.Debug = new DebugSettings();
+                }
+#endif
+
+                if (conf.AdvancedVehicleAI == null)
+                {
+                    conf.AdvancedVehicleAI = new AdvancedVehicleAI();
+                }
+
+                if (conf.DynamicLaneSelection == null)
+                {
+                    conf.DynamicLaneSelection = new DynamicLaneSelection();
+                }
+
+                if (conf.Gameplay == null)
+                {
+                    conf.Gameplay = new Gameplay();
+                }
+
+                if (conf.ParkingAI == null)
+                {
+                    conf.ParkingAI = new ParkingAI();
+                }
+
+                if (conf.PathFinding == null)
+                {
+                    conf.PathFinding = new PathFinding();
+                }
+
+                if (conf.PriorityRules == null)
+                {
+                    conf.PriorityRules = new PriorityRules();
+                }
+
+                if (conf.TimedTrafficLights == null)
+                {
+                    conf.TimedTrafficLights = new TimedTrafficLights();
+                }
+
+                return conf;
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Warning($"Could not load global config: {e} Generating default config.");
+            return WriteDefaultConfig(null, false, out modifiedTime);
+        }
+    }
+
+    public static void Reload(bool checkVersion = true)
+    {
+        DateTime modifiedTime;
+        GlobalConfig conf = Load(out modifiedTime);
+        if (checkVersion && conf.Version != -1 && conf.Version < LATEST_VERSION)
+        {
+            // backup old config and reset
+            string filename = BACKUP_FILENAME;
+            try
+            {
+                int backupIndex = 0;
+                while (File.Exists(filename))
+                {
+                    filename = BACKUP_FILENAME + "." + backupIndex;
+                    ++backupIndex;
+                }
+
+                WriteConfig(conf, filename);
+            }
+            catch (Exception e)
+            {
+                Log.Warning($"Error occurred while saving backup config to '{filename}': {e.ToString()}");
+            }
+
+            Reset(conf);
+        }
+        else
+        {
+            Instance = conf;
+            ModifiedTime = WriteConfig(Instance);
+        }
+    }
+
+    public static void Reset(GlobalConfig oldConfig, bool resetAll = false)
+    {
+        Log.Info($"Resetting global config.");
+        DateTime modifiedTime;
+        Instance = WriteDefaultConfig(oldConfig, resetAll, out modifiedTime);
+        ModifiedTime = modifiedTime;
+    }
+
+    private static void ReloadIfNewer()
+    {
+        try
+        {
+            DateTime modifiedTime = File.GetLastWriteTime(FILENAME);
+
+            if (modifiedTime > ModifiedTime)
+            {
+                Log.Info($"Detected modification of global config.");
+                Reload(false);
+            }
+        }
+        catch (Exception)
+        {
+            Log.Warning("Could not determine modification date of global config.");
+        }
+    }
+}
+}

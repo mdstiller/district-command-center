@@ -1,0 +1,15 @@
+{
+  "AssociatedModName": "UpdateBuildingPrefix",
+  "Version": "1.0.0",
+  "MainPanel": {
+    "backgroundSprite": "",
+    "padding": "",
+    "MainPanelControls": [
+      {
+        "type": "UIDragHandle",
+        "constraintToScreen": "true",
+        ""
+      }
+    ]
+  }
+}
