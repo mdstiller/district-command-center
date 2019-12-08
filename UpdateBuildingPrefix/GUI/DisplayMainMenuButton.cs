@@ -81,8 +81,7 @@ namespace UpdateBuildingPrefix.GUI
         /// </summary>
         public void UpdateTooltip()
         {
-            //tooltip = Translation.Menu.Get("Tooltip:Toggle Main Menu")
-            //          + GetTooltip();
+            tooltip = "Click here to expand the District Command Center";
         }
 
         public override void OnDestroy()
@@ -129,6 +128,11 @@ namespace UpdateBuildingPrefix.GUI
             base.OnPositionChanged();
         }
 
+        public void OnUpdate()
+        {
+            UpdatePosition(new Vector2(1500, 100));
+        }
+
         internal void UpdateSprites()
         {
             if (!ExtendedLoading.BaseUI.IsVisible())
@@ -160,35 +164,31 @@ namespace UpdateBuildingPrefix.GUI
                 m_PressedFgSprite = MAIN_MENU_BUTTON_FG_HOVERED;
             }
 
-            this.Invalidate();
+            Invalidate();
         }
-
-        /*public void OnUpdate(GlobalConfig config)
-        {
-            UpdatePosition(new Vector2(config.Main.MainMenuButtonX, config.Main.MainMenuButtonY));
-        }*/
 
         public void UpdatePosition(Vector2 pos)
         {
+            Debug.Log($"Setting main menu button position to [{pos.x},{pos.y}]");
+
             Rect rect = new Rect(pos.x, pos.y, BUTTON_WIDTH, BUTTON_HEIGHT);
             Vector2 resolution = UIView.GetAView().GetScreenResolution();
-            VectorUtil.ClampRectToScreen(ref rect, resolution);
-            //Log.Info($"Setting main menu button position to [{pos.x},{pos.y}]");
+            VectorUtil.ClampRectToScreen(ref rect, resolution);            
             absolutePosition = rect.position;
+
             Invalidate();
         }
 
         public void OnGUI()
         {
-            /*if (!UIView.HasModalInput()
-                && !UIView.HasInputFocus()
-                && KeybindSettingsBase.ToggleMainMenu.IsPressed(Event.current))
+            if (!UIView.HasModalInput()
+               && !UIView.HasInputFocus())
             {
                 if (ExtendedLoading.BaseUI != null)
                 {
                     ExtendedLoading.BaseUI.ToggleMainMenu();
                 }
-            }*/
+            }
         }
 
         private string GetTooltip()

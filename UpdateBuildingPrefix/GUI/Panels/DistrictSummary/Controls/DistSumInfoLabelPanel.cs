@@ -6,37 +6,71 @@ using System.Threading.Tasks;
 using ColossalFramework.UI;
 using UnityEngine;
 using ColossalFramework;
+using UpdateBuildingPrefix.Helpers;
 
 namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
 {
     public class DistSumInfoLabelPanel : UIPanel
-    {        
+    {
         public int InfoLabelsCount { get; private set; }
+        public string[] InfoLabelIcons { get; set; }
+        public int DistrictId { get; set; }
+        public List<DistSumInfoLabel> InfoLabels { get; private set; } = new List<DistSumInfoLabel>();
 
-        public override void Start()
+        public override void Awake()
         {
-            relativePosition = new Vector3(0f, 0f);
-            size = new Vector2(400, 40);
-            name = parent.name + ".InfoLabelPanel";
-
             autoLayoutDirection = LayoutDirection.Vertical;
             wrapLayout = true;
             autoLayout = true;
+            size = new Vector2(600, 60);
+        }
 
-            //Add InfoLabels to InfoLabelPanel
-            for (int i = 0; i < 5; i++)
+        public override void Start()
+        {
+            base.Start();
+
+            relativePosition = new Vector3(160f, 48f);
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            UpdateInfoPanel();
+
+            width = parent.width - position.x - 17f;
+            Invalidate();
+        }
+
+        internal void UpdateInfoPanel()
+        {
+
+            if (InfoLabels.Count == 0)
             {
-                var dsil = AddUIComponent<UILabel>();
-                dsil.text = "Text update during loop";
-                //_infoLabels.Add(dsil);
-            }            
+                Debug.Log("Updating info panel labels from string array...");
 
-            Debug.Log($"InfoLabel Count: {m_ChildComponents.Count}");
+                for (int i = 0; i < InfoLabelIcons.Length; i++)
+                {
+                    var dsil = AddUIComponent<DistSumInfoLabel>();
 
-            for (int i = 0;i < m_ChildComponents.Count;i++)
+                    //Debug.Log($"Attempting to set icon to {InfoLabelIcons[i]}");
+
+                    dsil.icnIcon.spriteName = InfoLabelIcons[i];
+                    InfoLabels.Add(dsil);
+                }
+            }
+
+            DistrictManager handle = Singleton<DistrictManager>.instance;
+            District district = handle.m_districts.m_buffer[DistrictId];
+
+            string spriteName = "";
+
+            //Debug.Log("Updating info panel labels from district...");
+            foreach (DistSumInfoLabel infoLabel in InfoLabels)
             {
-                UILabel temp = (UILabel)m_ChildComponents[i];
-                Debug.Log($"info label text: {temp.text}");       
+                spriteName = infoLabel.icnIcon.spriteName;
+
+                DistrictHelper.UpdateDistrictLabelData(infoLabel, DistrictId, spriteName, district);
             }
         }
     }

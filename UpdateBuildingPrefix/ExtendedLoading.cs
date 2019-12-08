@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using ColossalFramework.UI;
 using UnityEngine;
 using ICities;
+using UpdateBuildingPrefix.GUI.Panels.DistrictSummary;
 using UpdateBuildingPrefix.GUI;
-using UpdateBuildingPrefix.Panels;
 
 namespace UpdateBuildingPrefix
 {
@@ -15,6 +15,9 @@ namespace UpdateBuildingPrefix
     {
         public static bool IsGameLoaded { get; private set; }
         public static GUIBase BaseUI { get; private set; }
+        private UIView GameNativeUi;
+        private DistrictCommandCenter DistrictCommandCenterComponent;
+        
         public override void OnLevelLoaded(LoadMode mode)
         {
             SimulationManager.UpdateMode updateMode = SimulationManager.instance.m_metaData.m_updateMode;
@@ -51,11 +54,34 @@ namespace UpdateBuildingPrefix
                         break;
                 }*/
             
-            if(IsGameLoaded && BaseUI == null)
+            if(IsGameLoaded)//&& BaseUI == null)
             {
                 Debug.Log("Adding Base control UI.");
-                BaseUI = ToolsModifierControl.toolController.gameObject.AddComponent<GUIBase>();
+
+                GameNativeUi = UIView.GetAView();
+
+                if (GameNativeUi != null)
+                    RegisterDcc();
+                else
+                    Debug.LogError("Can't find the UI View!");
+                
             }
+        }
+        void RegisterDcc()
+        {
+            GameObject districtCommandCenter = new GameObject("DistrictCommandCenter");
+
+            if (districtCommandCenter == null)
+                return;
+
+            DistrictCommandCenterComponent = districtCommandCenter.AddComponent<DistrictCommandCenter>();
+            DistrictCommandCenterComponent.transform.parent = GameNativeUi.transform;
+        }
+        public override void OnReleased()
+        {
+            base.OnReleased();
+
+            GUIBase.ReleaseTool();
         }
     }
 }

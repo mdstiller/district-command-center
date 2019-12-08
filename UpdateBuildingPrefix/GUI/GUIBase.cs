@@ -13,24 +13,34 @@ namespace UpdateBuildingPrefix.GUI
     {
         public GUIMainMenuButton MainMenuButton { get; }
         public DistrictCommandCenter MainMenu { get; private set; }
+
+        public UIView GUIViewport { get; private set; }
+
         private bool _uiShown;
         
         public GUIBase()
         {
-            UIView uiView = UIView.GetAView();
+            GUIViewport = UIView.GetAView();
 
             //Add the Main Menu button
-            MainMenuButton = (GUIMainMenuButton)uiView.AddUIComponent(typeof(GUIMainMenuButton));
+            MainMenuButton = (GUIMainMenuButton)GUIViewport.AddUIComponent(typeof(GUIMainMenuButton));
             Debug.Log("The Main Menu button has been added.");
 
-            MainMenu = (DistrictCommandCenter)uiView.AddUIComponent(typeof(DistrictCommandCenter));
+            MainMenu = (DistrictCommandCenter)GUIViewport.AddUIComponent(typeof(DistrictCommandCenter));
             Debug.Log("The Main Menu has been added.");
+            
         }
 
         ~GUIBase()
         {
             UnityEngine.Object.Destroy(MainMenuButton);
             UnityEngine.Object.Destroy(MainMenu);
+        }
+
+        public void Update()
+        {
+
+            GUIViewport.Update();
         }
 
         public bool IsVisible()
@@ -76,5 +86,7 @@ namespace UpdateBuildingPrefix.GUI
         {
             return MainMenu;
         }
+
+        internal static void ReleaseTool() { Debug.Log("Implement tool release"); }
     }
 }

@@ -41,50 +41,25 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
         //Properties
         public UILabel VersionLabel { get; private set; }
         public UIDragHandle Drag { get; private set; }
+        public UIResizeHandle Resize { get; private set; }
         public DistrictSummaryList DistrictSummaryList { get; private set; } = new DistrictSummaryList();
 
         public List<DistrictSummaryDetails> DistrictSummaryDetails = new List<DistrictSummaryDetails>();
 
-        public const int DEFAULT_MENU_X = 45;
-        public const int DEFAULT_MENU_Y = 45;
+        public const int DEFAULT_MENU_X = 20;
+        public const int DEFAULT_MENU_Y = 20;
 
-        public override void Start()
+        public override void Awake()
         {
+            base.Awake();
+
             DetermineProfile();
-            OnUpdate();
 
             backgroundSprite = "GenericPanel";
             color = new Color32(0, 0, 0, 235);
 
             VersionLabel = AddUIComponent<VersionLabel>();
             DistrictSummaryList = AddUIComponent<DistrictSummaryList>();
-
-            DistrictManager districtManagerHandle = Singleton<DistrictManager>.instance;
-
-            DistrictManagerHelper.RefreshDistricts(districtManagerHandle);
-           
-            foreach (int districtId in DistrictManagerHelper.DistrictIds)
-            {
-                Debug.Log($"Adding panel for district #{districtId}.");
-
-                string districtName = DistrictManagerHelper.GetName(districtId, districtManagerHandle);
-
-                try
-                {
-                    Debug.Log($"Updating panel for {districtName} (#{districtId})");
-
-                    DistrictSummaryDetails temp = DistrictSummaryList.AddUIComponent<DistrictSummaryDetails>();
-                    temp.height = _activeProfile.DETAILS_HEIGHT;                   
-                    temp.DistrictId = districtId;
-                    //DistrictSummaryDetails.Add(temp);
-
-                    temp.AddDistrictDetailComponents(i);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"Error: {e.Message}\r\n{e.StackTrace}");
-                }
-            }
 
             //for (ushort i = 0; i < _dmh.DistrictCount; i++)
                 //UpdateInfoLabels(0);
@@ -96,18 +71,74 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
             Drag.enabled = true;            
             Drag.BringToFront();
 
+            var resizeHandler = new GameObject("DCC.MainMenu.ResizeHandler");
+            resizeHandler.transform.parent = transform;
+            resizeHandler.transform.localPosition = position;
+            Resize = resizeHandler.AddComponent<UIResizeHandle>();
+            Resize.enabled = true;
+            Resize.backgroundSprite = "ColorPickerIndicator";
+            Resize.BringToFront();
+
             UpdateAllSizes();
             eventVisibilityChanged += OnVisibilityChange;
 
             _started = true;
         }
+
+        public override void Start()
+        {
+            base.Start();
+            Debug.Log("Starting District Control Center Panel...");
+            OnUpdate();
+
+            DistrictManager districtManagerHandle = Singleton<DistrictManager>.instance;
+            DistrictManagerHelper.RefreshDistricts(districtManagerHandle);
+
+            foreach (int districtId in DistrictManagerHelper.DistrictIds)
+            {
+                Debug.Log($"Adding panel for district #{districtId}.");
+
+                string districtName = DistrictManagerHelper.GetName(districtId, districtManagerHandle);
+
+                try
+                {
+                    Debug.Log($"Updating panel for {districtName} (#{districtId})");
+
+                    DistrictSummaryDetails temp = DistrictSummaryList.AddUIComponent<DistrictSummaryDetails>();
+                    temp.height = _activeProfile.DETAILS_HEIGHT;
+                    temp.anchor = UIAnchorStyle.Left;
+                    temp.DistrictId = districtId;
+                    temp.DistrictName = districtName;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Error: {e.Message}\r\n{e.StackTrace}");
+                }
+            }
+
+            UpdateInfoLabels(Singleton<DistrictManager>.instance);
+        }
+
+        private void DistrictCommandCenter_eventSizeChanged(UIComponent component, Vector2 value)
+        {
+            if (_started)
+            {
+                Debug.Log("Firing DistrictCommandCenter_eventSizeChanged");
+                DistrictSummaryList.size = new Vector2(value.x - 10, value.y - 40);                
+            }
+        }
+
         private void DetermineProfile() {
             _activeProfile = SIZE_PROFILES[0];
         }
 
-        private void UpdateInfoLabels(ushort districtId)
+        private void UpdateInfoLabels(DistrictManager districtManager)
         {
-            /*foreach(DistSumInfoLabel in )
+            /*foreach (DistrictSummaryDetails distSum in DistrictSummaryDetails)
+            {
+                distSum.AddDistrictDetailComponents(distSum.DistrictId, districtManager);
+            }
+            foreach(DistSumInfoLabel in )
             //for (int i = 0; i < 5; i++)
             //{
                 int i = 0;
@@ -134,10 +165,12 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
 
             if(_started)
             {
+                //UpdateInfoLabels(Singleton<DistrictManager>.instance);
                 UpdateAllSizes();
                 Invalidate();
             }
         }
+         
         protected override void OnPositionChanged()
         {
             base.OnPositionChanged();
@@ -147,7 +180,7 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
         {
             VersionLabel.enabled = value;            
         }
-
+       
         public override void OnDestroy()
         {
             eventVisibilityChanged -= OnVisibilityChange;
@@ -176,7 +209,7 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
         {
             //DistrictSummaryList.relativePosition = new Vector3(5f, 45f);
             //DistrictSummaryList.width = _activeProfile.MENU_WIDTH - 10;
-            DistrictSummaryList.height = _activeProfile.MENU_HEIGHT - 10;
+            DistrictSummaryList.height = _activeProfile.MENU_HEIGHT - 20;
             DistrictSummaryList.Invalidate();
         }
 

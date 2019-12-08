@@ -10,7 +10,7 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
 {
     class ViewDistrictPoliciesButton : UIButton
     {
-        public override void Start()
+        public override void Awake()
         {
             size = new Vector2(100, 20);
             text = "Configure District Policies";

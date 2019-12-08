@@ -12,14 +12,18 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
     {
         public override void Start()
         {
-            width = 10f;
+            base.Start();
+
+            width = 15f;
             height = parent.height;
             orientation = UIOrientation.Vertical;
             pivot = UIPivotPoint.BottomLeft;
-            AlignTo((UIComponent)parent, UIAlignAnchor.TopRight);
+            AlignTo(parent, UIAlignAnchor.TopRight);
             minValue = 0.0f;
             value = 0.0f;
-            incrementAmount = (float)height;
+            incrementAmount = 40f;
+            stepSize = 1;
+            scrollEasingType = ColossalFramework.EasingType.BackEaseOut;
 
             UISlicedSprite uiSlicedSprite1 = AddUIComponent<UISlicedSprite>();
             uiSlicedSprite1.relativePosition = (Vector3)Vector2.zero;

@@ -37,14 +37,31 @@
     <Reference Include="ColossalManaged">
       <HintPath>I:\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
     </Reference>
+    <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Humanizer.Core.2.2.0\lib\netstandard1.0\Humanizer.dll</HintPath>
+    </Reference>
     <Reference Include="ICities">
       <HintPath>I:\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.Decompiler, Version=5.0.2.5153, Culture=neutral, PublicKeyToken=d4bfe873e7598c49, processorArchitecture=MSIL">
+      <HintPath>..\packages\ICSharpCode.Decompiler.5.0.2.5153\lib\netstandard2.0\ICSharpCode.Decompiler.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.Metadata.1.6.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,19 +81,18 @@
     <Compile Include="GUI\DisplayMainMenuButton.cs" />
     <Compile Include="GUI\CustomTextures\TextureResources.cs" />
     <Compile Include="GUI\GUIBase.cs" />
+    <Compile Include="GUI\Helpers\InfoLabelHelper.cs" />
     <Compile Include="GUI\Helpers\VectorUtil.cs" />
     <Compile Include="GUI\LinearSpriteButton.cs" />
     <Compile Include="GUI\Helpers\EnumUtil.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumDetailsIcon.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistrictSummaryDetails.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistrictSummaryList.cs" />
-    <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumDistrictName.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumInfoLabelPanel.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumPolicyIcon.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumInfoLabel.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumPolicyIconPanel.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\Scrollbar.cs" />
-    <Compile Include="GUI\Panels\DistrictSummary\Controls\ScrollbarPanel.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\VersionLabel.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\ViewDistrictPoliciesButton.cs" />
     <Compile Include="Helpers\DistrictHelper.cs" />

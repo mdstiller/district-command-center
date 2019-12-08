@@ -37,7 +37,7 @@ namespace UpdateBuildingPrefix.Helpers
             //Max array size is 128
             for (int i = 0; i < 128; i++)
             {
-                Debug.Log($"Getting details for district #{i}...");
+                //Debug.Log($"Getting details for district #{i}...");
 
                 try
                 {
@@ -45,12 +45,12 @@ namespace UpdateBuildingPrefix.Helpers
 
                     if (!districtName.Equals(""))
                     {
-                        Debug.Log($"Adding District Name: {districtName} (#{i})");
+                        //Debug.Log($"Adding District Name: {districtName} (#{i})");
                         DistrictIds.Add(i);
                     }
                 } catch
                 {
-                    Debug.LogWarning($"No district exists at position {i}");
+                    //Debug.LogWarning($"No district exists at position {i}");
                 }
             }
         }

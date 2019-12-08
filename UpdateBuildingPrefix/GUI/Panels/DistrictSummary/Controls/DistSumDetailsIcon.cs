@@ -13,7 +13,7 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
     public class DistSumDetailsIcon : UISprite
     {
         private const string DISTRICT_ICON = "DCC.DistrictSummary.Details.Icon";
-        public override void Start()
+        public override void Awake()
         {
             var spriteNames = new[] { DISTRICT_ICON };
             atlas = TextureUtil.GenerateLinearAtlas(
@@ -23,8 +23,7 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
 
             spriteName = DISTRICT_ICON;
             size = new Vector2(147, 92);
-            relativePosition = new Vector3(parent.center.x, 5f);
-            name = parent.name + ".Icon";
+            relativePosition = new Vector3(8f, 48f);
 
             Debug.Log($"Icon Added: {name}");
 

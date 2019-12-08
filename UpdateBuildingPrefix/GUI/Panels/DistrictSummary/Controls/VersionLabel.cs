@@ -6,7 +6,7 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
 {
     public class VersionLabel : UILabel
     {
-        public override void Start()
+        public override void Awake()
         {
             text = UpdateBuildingPrefix.ModName;
             relativePosition = new Vector3(15f, 5f);

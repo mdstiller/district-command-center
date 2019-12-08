@@ -10,29 +10,43 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
 {
     public class DistrictSummaryList : UIScrollablePanel
     {
-        public ScrollbarPanel ScrollbarPanel { get; private set; }
         public Scrollbar Scrollbar { get; private set; }
-        public override void Start()
-        {
-            size = new Vector2(parent.width-10, parent.height-40);
-            backgroundSprite = "GenericPanel";
+        public override void Awake()
+        {            
+            backgroundSprite = string.Empty;
             color = new Color32(20, 20, 20, 220);
-            relativePosition = new Vector3(5f, 35f);
             autoLayoutStart = LayoutStart.TopLeft;
             autoLayoutPadding = new RectOffset(8, 8, 8, 8);
             autoLayoutDirection = LayoutDirection.Vertical;            
             autoLayout = true;
             clipChildren = true;
+            scrollWheelDirection = UIOrientation.Vertical;
+            builtinKeyNavigation = true;
+            anchor = UIAnchorStyle.All;            
+        }
+
+        public override void Start()
+        {
+            base.Start();
 
             Debug.Log("Adding Scrollbar Panel to Scrollable Panel");
 
-            ScrollbarPanel = AddUIComponent<ScrollbarPanel>();
-
             Scrollbar = AddUIComponent<Scrollbar>();
+            verticalScrollbar = Scrollbar;
 
-            eventMouseWheel += ((component, param) => scrollPosition += new Vector2(0.0f, Mathf.Sign(param.wheelDelta) * -1f * Scrollbar.incrementAmount));
+            eventMouseWheel += (component, param) => {
+                Scrollbar.value += (int)param.wheelDelta * Scrollbar.incrementAmount;
+            };
 
-            //FitToContents();
+            size = new Vector2(parent.width-10, parent.height-40);
+            relativePosition = new Vector3(5f, 35f);
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            //size = new Vector2(parent.size.x, parent.size.y);
+            Invalidate();
         }
     }
 }
