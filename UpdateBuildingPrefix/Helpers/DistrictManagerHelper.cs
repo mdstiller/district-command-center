@@ -34,24 +34,10 @@ namespace UpdateBuildingPrefix.Helpers
             Debug.Log("Refreshing district details...");
             DistrictIds.Clear();
 
-            //Max array size is 128
-            for (int i = 0; i < 128; i++)
+            for (byte i = 1; i < DistrictManager.MAX_DISTRICT_COUNT; i++)
             {
-                //Debug.Log($"Getting details for district #{i}...");
-
-                try
-                {
-                    string districtName = districtManager.GetDistrictName(i);
-
-                    if (!districtName.Equals(""))
-                    {
-                        //Debug.Log($"Adding District Name: {districtName} (#{i})");
-                        DistrictIds.Add(i);
-                    }
-                } catch
-                {
-                    //Debug.LogWarning($"No district exists at position {i}");
-                }
+                if ((districtManager.m_districts.m_buffer[i].m_flags & global::District.Flags.Created) != 0)
+                    DistrictIds.Add(i);
             }
         }
     }

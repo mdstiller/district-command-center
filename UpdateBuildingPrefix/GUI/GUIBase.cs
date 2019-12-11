@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ColossalFramework.UI;
 using UnityEngine;
+using UpdateBuildingPrefix.Helpers;
 using UpdateBuildingPrefix.GUI.Panels.DistrictSummary;
 
 namespace UpdateBuildingPrefix.GUI
@@ -23,19 +24,18 @@ namespace UpdateBuildingPrefix.GUI
             GUIViewport = UIView.GetAView();
 
             //Add the Main Menu button
-            MainMenuButton = (GUIMainMenuButton)GUIViewport.AddUIComponent(typeof(GUIMainMenuButton));
-            Debug.Log("The Main Menu button has been added.");
+            //MainMenuButton = (GUIMainMenuButton)GUIViewport.AddUIComponent(typeof(GUIMainMenuButton));
+            //Debug.Log("The Main Menu button has been added.");
 
             MainMenu = (DistrictCommandCenter)GUIViewport.AddUIComponent(typeof(DistrictCommandCenter));
             Debug.Log("The Main Menu has been added.");
-            
         }
 
         ~GUIBase()
         {
             UnityEngine.Object.Destroy(MainMenuButton);
             UnityEngine.Object.Destroy(MainMenu);
-        }
+        }       
 
         public void Update()
         {

@@ -34,6 +34,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>I:\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>I:\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="ColossalManaged">
       <HintPath>I:\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
     </Reference>
@@ -85,18 +89,23 @@
     <Compile Include="GUI\Helpers\VectorUtil.cs" />
     <Compile Include="GUI\LinearSpriteButton.cs" />
     <Compile Include="GUI\Helpers\EnumUtil.cs" />
-    <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumDetailsIcon.cs" />
+    <Compile Include="GUI\Panels\DistrictSummary\Controls\BtnUpdateServiceBuildingPrefix.cs" />
+    <Compile Include="GUI\Panels\DistrictSummary\Controls\BtnViewPolicies.cs" />
+    <Compile Include="GUI\Panels\DistrictSummary\Controls\FrmUpdateBuildingPrefix.cs" />
+    <Compile Include="GUI\Panels\DistrictSummary\Controls\IcnDistrictPhoto.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistrictSummaryDetails.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistrictSummaryList.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumInfoLabelPanel.cs" />
-    <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumPolicyIcon.cs" />
+    <Compile Include="GUI\Panels\DistrictSummary\Controls\BtnPolicyIcon.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumInfoLabel.cs" />
-    <Compile Include="GUI\Panels\DistrictSummary\Controls\DistSumPolicyIconPanel.cs" />
+    <Compile Include="GUI\Panels\DistrictSummary\Controls\PnlDistPolicyIcons.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\Scrollbar.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\VersionLabel.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\Controls\ViewDistrictPoliciesButton.cs" />
+    <Compile Include="Helpers\CameraHelper.cs" />
     <Compile Include="Helpers\DistrictHelper.cs" />
     <Compile Include="Helpers\DistrictManagerHelper.cs" />
+    <Compile Include="Helpers\DistrictParkHelper.cs" />
     <Compile Include="Helpers\JsonBuildUi\JsonBuildUi.cs" />
     <Compile Include="GUI\Helpers\TextureUtil.cs" />
     <Compile Include="GUI\Panels\DistrictSummary\DistrictCommandCenter.cs" />
@@ -125,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\District\district-icon-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Menu\main-menu-logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

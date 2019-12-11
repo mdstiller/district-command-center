@@ -14,7 +14,7 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
     {
         public int InfoLabelsCount { get; private set; }
         public string[] InfoLabelIcons { get; set; }
-        public int DistrictId { get; set; }
+        public byte DistrictId { get; set; }
         public List<DistSumInfoLabel> InfoLabels { get; private set; } = new List<DistSumInfoLabel>();
 
         public override void Awake()
@@ -23,12 +23,15 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
             wrapLayout = true;
             autoLayout = true;
             size = new Vector2(600, 60);
+            anchor = UIAnchorStyle.Right;
+            autoSize = true;
         }
 
         public override void Start()
         {
             base.Start();
 
+            byte DistrictId = ((DistrictSummaryDetails)parent).DistrictId;
             relativePosition = new Vector3(160f, 48f);
         }
 
@@ -59,9 +62,8 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
                     InfoLabels.Add(dsil);
                 }
             }
-
-            DistrictManager handle = Singleton<DistrictManager>.instance;
-            District district = handle.m_districts.m_buffer[DistrictId];
+            
+            District district = DistrictManager.instance.m_districts.m_buffer[DistrictId];
 
             string spriteName = "";
 

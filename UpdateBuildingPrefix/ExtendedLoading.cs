@@ -14,8 +14,7 @@ namespace UpdateBuildingPrefix
     public class ExtendedLoading : LoadingExtensionBase
     {
         public static bool IsGameLoaded { get; private set; }
-        public static GUIBase BaseUI { get; private set; }
-        private UIView GameNativeUi;
+        public static GUIBase BaseUI { get; private set; }   
         private DistrictCommandCenter DistrictCommandCenterComponent;
         
         public override void OnLevelLoaded(LoadMode mode)
@@ -54,17 +53,15 @@ namespace UpdateBuildingPrefix
                         break;
                 }*/
             
-            if(IsGameLoaded)//&& BaseUI == null)
+            if(IsGameLoaded && BaseUI == null)
             {
                 Debug.Log("Adding Base control UI.");
-
-                GameNativeUi = UIView.GetAView();
-
-                if (GameNativeUi != null)
+                BaseUI = ToolsModifierControl.toolController.gameObject.AddComponent<GUIBase>();
+                
+                /*if (BaseUI != null)
                     RegisterDcc();
                 else
-                    Debug.LogError("Can't find the UI View!");
-                
+                    Debug.LogError("Can't find the UI View!");*/                
             }
         }
         void RegisterDcc()
@@ -75,7 +72,7 @@ namespace UpdateBuildingPrefix
                 return;
 
             DistrictCommandCenterComponent = districtCommandCenter.AddComponent<DistrictCommandCenter>();
-            DistrictCommandCenterComponent.transform.parent = GameNativeUi.transform;
+            //DistrictCommandCenterComponent.transform.parent = GameNativeUi.transform;
         }
         public override void OnReleased()
         {

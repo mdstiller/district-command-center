@@ -21,7 +21,7 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls
             AlignTo(parent, UIAlignAnchor.TopRight);
             minValue = 0.0f;
             value = 0.0f;
-            incrementAmount = 40f;
+            incrementAmount = 150f;
             stepSize = 1;
             scrollEasingType = ColossalFramework.EasingType.BackEaseOut;
 

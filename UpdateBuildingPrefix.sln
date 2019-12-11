@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D879F35F-1B87-443A-9A7E-7CAF9F46C2EF}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		I:\Steam\steamapps\workshop\content\255710\785528371\CinematicCameraExtended.dll = I:\Steam\steamapps\workshop\content\255710\785528371\CinematicCameraExtended.dll
 		README.MD = README.MD
 	EndProjectSection
 EndProject

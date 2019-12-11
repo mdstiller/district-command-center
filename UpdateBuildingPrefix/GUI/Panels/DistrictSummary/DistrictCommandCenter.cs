@@ -8,6 +8,7 @@ using ColossalFramework;
 using UnityEngine;
 using ICities;
 using UpdateBuildingPrefix.GUI.Panels.DistrictSummary.Controls;
+using UpdateBuildingPrefix.GUI.CustomTextures;
 using UpdateBuildingPrefix.GUI.Helpers;
 using UpdateBuildingPrefix.Helpers;
 
@@ -27,7 +28,7 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
             new SizeProfile
             {
                 TOP_BORDER = 25,
-                DETAILS_HEIGHT = 200,
+                DETAILS_HEIGHT = 400,
 
                 MENU_WIDTH = 1000,
                 MENU_HEIGHT = 700
@@ -36,12 +37,15 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
 
         //Member private variables
         private SizeProfile _activeProfile;
-        private bool _started;   
+        private bool _started;
+
 
         //Properties
         public UILabel VersionLabel { get; private set; }
         public UIDragHandle Drag { get; private set; }
         public UIResizeHandle Resize { get; private set; }
+        public UIButton Close { get; private set; }
+        public UISprite ApplicationLogo { get; private set; }
         public DistrictSummaryList DistrictSummaryList { get; private set; } = new DistrictSummaryList();
 
         public List<DistrictSummaryDetails> DistrictSummaryDetails = new List<DistrictSummaryDetails>();
@@ -56,13 +60,11 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
             DetermineProfile();
 
             backgroundSprite = "GenericPanel";
-            color = new Color32(0, 0, 0, 235);
+            color = new Color32(0, 0, 0, 255);
 
+            ApplicationLogo = AddUIComponent<UISprite>();
             VersionLabel = AddUIComponent<VersionLabel>();
             DistrictSummaryList = AddUIComponent<DistrictSummaryList>();
-
-            //for (ushort i = 0; i < _dmh.DistrictCount; i++)
-                //UpdateInfoLabels(0);
 
             var dragHandler = new GameObject("DCC.MainMenu.DragHandler");
             dragHandler.transform.parent = transform;
@@ -79,51 +81,69 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
             Resize.backgroundSprite = "ColorPickerIndicator";
             Resize.BringToFront();
 
+            Close = AddUIComponent<UIButton>();
+            Close.normalFgSprite = "buttonclose";
+            Close.hoveredFgSprite = "buttonclosehover";
+            Close.pressedFgSprite = "buttonclosepressed";
+            Close.anchor = UIAnchorStyle.Top | UIAnchorStyle.Right;
+
+            var spriteNames = new[] { TextureResources.DistrictCommandCenterLogo.name };
+            ApplicationLogo.atlas = TextureUtil.GenerateLinearAtlas(
+                TextureResources.DistrictCommandCenterLogo.name,
+                TextureResources.DistrictCommandCenterLogo,
+                1, spriteNames);
+
+            ApplicationLogo.spriteName = TextureResources.DistrictCommandCenterLogo.name;
+            ApplicationLogo = AddUIComponent<UISprite>();
+            ApplicationLogo.size = new Vector2(600, 111);
+            ApplicationLogo.SendToBack();
+
             UpdateAllSizes();
             eventVisibilityChanged += OnVisibilityChange;
+            Close.eventClick += Close_eventClick;
 
             _started = true;
+        }
+
+        private void Close_eventClick(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            isVisible = false;
         }
 
         public override void Start()
         {
             base.Start();
             Debug.Log("Starting District Control Center Panel...");
+
             OnUpdate();
 
-            DistrictManager districtManagerHandle = Singleton<DistrictManager>.instance;
-            DistrictManagerHelper.RefreshDistricts(districtManagerHandle);
-
-            foreach (int districtId in DistrictManagerHelper.DistrictIds)
+            Close.relativePosition = new Vector3(size.x - Close.size.x - 10f, 5f);
+            VersionLabel.relativePosition = new Vector3(10f, 5f);
+            
+            foreach (DistrictParkHelper dp in DistrictParkHelper.GetAllDistrictParks())
             {
-                Debug.Log($"Adding panel for district #{districtId}.");
-
-                string districtName = DistrictManagerHelper.GetName(districtId, districtManagerHandle);
+                Debug.Log($"Adding panel for district #{dp.Name}.");
 
                 try
                 {
-                    Debug.Log($"Updating panel for {districtName} (#{districtId})");
+                    Debug.Log($"Updating panel for {dp.Name} (#{dp.District})");
 
                     DistrictSummaryDetails temp = DistrictSummaryList.AddUIComponent<DistrictSummaryDetails>();
                     temp.height = _activeProfile.DETAILS_HEIGHT;
                     temp.anchor = UIAnchorStyle.Left;
-                    temp.DistrictId = districtId;
-                    temp.DistrictName = districtName;
+                    temp.DistrictId = dp.District;
                 }
                 catch (Exception e)
                 {
                     Debug.LogError($"Error: {e.Message}\r\n{e.StackTrace}");
                 }
-            }
-
-            UpdateInfoLabels(Singleton<DistrictManager>.instance);
+            }            
         }
 
         private void DistrictCommandCenter_eventSizeChanged(UIComponent component, Vector2 value)
         {
             if (_started)
             {
-                Debug.Log("Firing DistrictCommandCenter_eventSizeChanged");
                 DistrictSummaryList.size = new Vector2(value.x - 10, value.y - 40);                
             }
         }
@@ -132,40 +152,13 @@ namespace UpdateBuildingPrefix.GUI.Panels.DistrictSummary
             _activeProfile = SIZE_PROFILES[0];
         }
 
-        private void UpdateInfoLabels(DistrictManager districtManager)
-        {
-            /*foreach (DistrictSummaryDetails distSum in DistrictSummaryDetails)
-            {
-                distSum.AddDistrictDetailComponents(distSum.DistrictId, districtManager);
-            }
-            foreach(DistSumInfoLabel in )
-            //for (int i = 0; i < 5; i++)
-            //{
-                int i = 0;
-            string labelName = "";
-            DistSumInfoLabel dsil = 
-            
-
-                if (dsil == null)
-                {
-                    Debug.LogError($"\r\nInfoLabel {labelName} was not found!");
-                }
-                else
-                {
-                    labelName = dsil.name;//$"DCC.DistrictSummary.Details.PanelDistrict{districtId.ToString()}.InfoLabelPanel.InfoLabel{i}";
-                    Debug.Log($"Updating label:\r\n{labelName}");
-                dsil.InfoLabelText = "Set some test text.";
-                }
-            //}*/
-        }
-
         public void OnUpdate()
         {
             UpdatePosition(new Vector2(DEFAULT_MENU_X, DEFAULT_MENU_Y));
 
             if(_started)
             {
-                //UpdateInfoLabels(Singleton<DistrictManager>.instance);
+                ApplicationLogo.relativePosition = new Vector3(50f, -111f);
                 UpdateAllSizes();
                 Invalidate();
             }

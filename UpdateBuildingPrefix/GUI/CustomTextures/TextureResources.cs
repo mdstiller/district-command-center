@@ -16,17 +16,19 @@ namespace UpdateBuildingPrefix.GUI.CustomTextures
         public static readonly Texture2D NoImageTexture2D;
         public static readonly Texture2D RemoveButtonTexture2D;
         public static readonly Texture2D WindowBackgroundTexture2D;
+        public static readonly Texture2D DistrictCommandCenterLogo;
         public static Assembly SelectedAssembly { get; set; }
 
         static TextureResources()
         {
-            Debug.Log("Loading NoImage Texture...");
             NoImageTexture2D = LoadDllResource("no-image.png", 64, 64);
             NoImageTexture2D.name = "DCC.Icons.NoImage";
 
-            Debug.Log("Loading Main Menu Button Texture...");
             MainMenuButtonTexture2D = LoadDllResource("Menu.main-menu-button.png", 300, 50);
             MainMenuButtonTexture2D.name = "DCC.Icons.MainMenuButton";
+
+            DistrictCommandCenterLogo = LoadDllResource("Menu.main-menu-logo.png", 600, 111);
+            DistrictCommandCenterLogo.name = "DCC.Logo";
         }
         
         internal static Texture2D LoadDllResource(string resourceName, int width, int height)
